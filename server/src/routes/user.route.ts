@@ -15,6 +15,7 @@ class UserRoute implements Routes {
 
   private initializeRoutes() {
     this.router.get(`${this.path}`, this.userController.index);
+    this.router.get(`${this.path}/search`, this.userController.search);
     // this.router.put(`${this.path}/:id`, this.userController);
   }
 }
