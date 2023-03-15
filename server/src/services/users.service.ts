@@ -1,12 +1,15 @@
 import { hash } from "bcrypt";
 import { CreateUserDto } from "../dtos/users.dto";
 import { HttpException } from "../exceptions/HttpException";
+import { Friend } from "../interfaces/friends.interface";
 import { User } from "../interfaces/users.interface";
+import friendModel from "../models/friends.model";
 import userModel from "../models/users.model";
 import { isEmpty } from "../utils/util";
 
 class UserService {
   public users = userModel;
+  public friends = friendModel;
 
   public async findAllUser(): Promise<User[]> {
     const users: User[] = await this.users.find();
@@ -77,6 +80,47 @@ class UserService {
 
     return deleteUserById;
   }
+
+  public searchUser = async (search: string): Promise<User[]> => {
+    const users: User[] = await this.users.find({
+      $or: [
+        { name: { $regex: search, $options: "i" } },
+        { email: { $regex: search, $options: "i" } },
+      ],
+    });
+    return users;
+  };
+
+  public sendFriendRequest = async (userId: string, friendId: string) => {
+    if (!(await this.users.findById(friendId)))
+      throw new HttpException(409, "Friend not found");
+    const friendUser = await this.friends.findOne({
+      user: friendId,
+    });
+    const user = await this.friends.findOne({
+      user: userId,
+    });
+    if (user.friends.includes(friendId))
+      throw new HttpException(409, "You're already friends");
+    if (user.friendRequestsSent.includes(friendId))
+      throw new HttpException(409, "You have already sent request");
+    if (user.friendRequests.includes(friendId))
+      throw new HttpException(409, "You have already received request");
+
+    user.friendRequestsSent.push(friendId);
+    friendUser.friendRequests.push(userId);
+    await user.save();
+    await friendUser.save();
+    
+
+    // const userFriend:Friend = await this.friends.findOne({
+    //   $or: [
+    //     { $and: [{ user: userId }, { friend: friendId }] },
+    //     { $and: [{ user: friendId }, { friend: userId }] },
+    //   ],
+    // });
+    // if (userFriend) throw new HttpException(409, "You're already friend");
+  };
 }
 
 export default UserService;

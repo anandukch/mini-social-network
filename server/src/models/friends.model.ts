@@ -1,5 +1,5 @@
 import { model, Schema, Document } from "mongoose";
-import { User } from "../interfaces/users.interface";
+import { Friend } from "../interfaces/friends.interface";
 
 const friendSchema: Schema = new Schema({
   user: {
@@ -28,6 +28,6 @@ const friendSchema: Schema = new Schema({
   ],
 });
 
-const friendModel = model<Document>("Friend", friendSchema);
+const friendModel = model<Friend & Document>("Friend", friendSchema);
 
 export default friendModel;
