@@ -18,7 +18,6 @@ function App() {
   //   }
   // }, [])
   const {userToken} = useSelector((state: RootState) => state.auth)
-  // console.log(userToken);
   
   return (
     <BrowserRouter>

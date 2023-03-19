@@ -1,9 +1,13 @@
 import React, { useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux";
-import { getProfile } from "../apis/userApi";
+import { useParams } from "react-router-dom";
+import { addFriend, getProfile } from "../apis/userApi";
 import { setProfile } from "../features/auth/authSlice";
 import { AppDispatch, RootState } from "../store/store";
 const Profile = () => {
+  const dispatch = useDispatch<AppDispatch>()
+  const { friend } = useParams()
+  
   const [user, setUser] = useState<any>({})
   useEffect(() => {
     getProfile().then(res => {
@@ -13,6 +17,12 @@ const Profile = () => {
     }
     )
   }, [])
+
+  const onClickHandler = (e: any) => {
+    addFriend(user._id).then(res => {
+      console.log(res);
+    })
+  }
 
   return (
     <>
@@ -26,8 +36,11 @@ const Profile = () => {
                   <div className="mt-3">
                     <h4>{user.firstName}</h4>
                     <p className="text-muted font-size-sm">{user.email}</p>
-                    <button className="btn btn-primary">Follow</button>
-                    <button className="btn btn-outline-primary">Message</button>
+                    {
+                      friend && <button className="btn btn-primary" onClick={onClickHandler}>Follow</button>
+                    }
+                    
+                    {/* <button className="btn btn-outline-primary">Message</button> */}
                   </div>
                 </div>
               </div>
