@@ -1,6 +1,6 @@
 import { createAsyncThunk, AsyncThunkOptions } from "@reduxjs/toolkit";
 import { AxiosResponse } from "axios";
-import { register } from "../../apis";
+// import { register } from "../../apis";
 import { AppDispatch } from "../../store/store";
 
 // export const registerUser = (user: User) => async (dispatch: AppDispatch) => {
@@ -21,7 +21,6 @@ export const registerUser = createAsyncThunk<any,any>(
   async (payload:PayloadI,thunkApi) => {
     try {
       // const { data }: AxiosResponse = await register(payload);
-      console.log(payload);
       
       localStorage.setItem("auth", "data.userToken");
       return "data";
