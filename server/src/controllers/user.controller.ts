@@ -36,5 +36,22 @@ class UserController {
       next(error);
     }
   };
+
+  public removeFriend = async (
+    req: RequestWithUser,
+    res: Response,
+    next: NextFunction
+  ) => {
+    try {
+      const userData: User = req.user;
+      const user = await this.userService.unFriend(
+        userData,
+        req.params.friendId as string
+      );
+      res.status(200).json({ data: user, message: "removeFriend" });
+    } catch (error) {
+      next(error);
+    }
+  };
 }
 export default UserController;
