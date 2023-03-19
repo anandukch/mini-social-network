@@ -26,6 +26,8 @@ class UserService {
   }
 
   public async createUser(userData: CreateUserDto): Promise<User> {
+    console.log(userData);
+    
     if (isEmpty(userData)) throw new HttpException(400, "You're not userData");
 
     const findUser: User = await this.users.findOne({ email: userData.email });
@@ -126,55 +128,10 @@ class UserService {
     return users;
   };
 
-  // public sendFriendRequest = async (
-  //   userId: string,
-  //   friendId: string,
-  //   action: any
-  // ) => {
-  //   if (!(await this.users.findById(friendId)))
-  //     throw new HttpException(409, "Friend not found");
-  //   const friendUser = await this.friends.findOne({
-  //     user: friendId,
-  //   });
-  //   const user = await this.friends.findOne({
-  //     user: userId,
-  //   });
-  //   if (user.friends.includes(friendId))
-  //     throw new HttpException(409, "You're already friends");
-  //   if (user.friendRequestsSent.includes(friendId))
-  //     throw new HttpException(409, "You have already sent request");
-  //   if (user.friendRequests.includes(friendId))
-  //     throw new HttpException(409, "You have already received request");
-
-  //   user.friendRequestsSent.push(friendId);
-  //   friendUser.friendRequests.push(userId);
-  //   await user.save();
-  //   await friendUser.save();
-
-  //   // const userFriend:Friend = await this.friends.findOne({
-  //   //   $or: [
-  //   //     { $and: [{ user: userId }, { friend: friendId }] },
-  //   //     { $and: [{ user: friendId }, { friend: userId }] },
-  //   //   ],
-  //   // });
-  //   // if (userFriend) throw new HttpException(409, "You're already friend");
-  // };
-
   public findMutualFriends = async (userId1: string, userId2: string) => {
     const user1 = await this.friends.findOne({ user: userId1 }, "friends");
 
     const user2 = await this.friends.findOne({ user: userId2 }, "friends");
-
-    // const mutualFriends = await this.friends.find({
-    //   $or: [
-    //     { $and: [{ friends: { $in: userId1 } }] },
-    //     { $and: [{ friends: { $in: userId2 } }] },
-    //   ],
-    // });
-    // const mutualFriends = await this.users.find({
-    //   _id: { $in: user1.friends },
-    //   _id: { $in: user2.friends }
-    // }, '_id');
 
     const mutualFriends = await this.users.find(
       {

@@ -14,15 +14,25 @@ import { AppDispatch } from "../../store/store";
 // }
 
 interface PayloadI{
-  email:string,
-  password:string
+  form:{
+    email:string,
+    password:string,
+    // firstName:string,
+    // lastName:string,
+  },
+  navigate:Function
 }
 export const registerUser = createAsyncThunk<any,any>(
   "auth/register",
   async (payload:PayloadI,thunkApi) => {
     try {
-      const { data }: AxiosResponse = await register(payload);
+      const {form,navigate} = payload
+      
+      const { data }: AxiosResponse = await register(form);
+      console.log(data);
+      
       localStorage.setItem("auth", JSON.stringify(data.data.token));
+      navigate("/profile");
       return data.data;
     } catch (error: any) {
       console.log(error);

@@ -19,7 +19,8 @@ import { searchUsers } from '../apis/userApi';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../store/store';
 import { logout } from '../features/auth/authSlice';
-import { Button } from '@mui/material';
+import { Button, Paper } from '@mui/material';
+import SearchBar from 'material-ui-search-bar';
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -65,7 +66,7 @@ export default function PrimarySearchAppBar() {
   const dispatch = useDispatch<AppDispatch>();
 
   const { userToken } = useSelector((state: RootState) => state.auth)
-  console.log(userToken);
+  const [searched, setSearched] = React.useState<[]>([]);
 
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] =
@@ -90,9 +91,13 @@ export default function PrimarySearchAppBar() {
   const handleMobileMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
     setMobileMoreAnchorEl(event.currentTarget);
   };
-  const onInputChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
-    searchUsers(e.target.value).then((res) => {
-      console.log(res);
+  const onInputChangeHandler = (value: string) => {
+    searchUsers(value).then((res) => {
+
+      const { data } = res.data
+      console.log(data);
+      
+      setSearched(data);
     }).catch(err => {
       console.log(err);
     })
@@ -184,7 +189,25 @@ export default function PrimarySearchAppBar() {
           >
             Mini Social Network
           </Typography>
-          <Search>
+          <Paper className='absol'>
+            <SearchBar
+              value={""}
+              onChange={onInputChangeHandler}
+              // onCancelSearch={() => cancelSearch()}
+            />
+
+            {
+              searched.length > 0 && searched.map((user: any,index:number) => {
+                return (
+                  <div key={index} className="z-10 realtive">
+                    <div>{user.firstName}</div>
+                 </div>
+                )
+              })
+            }
+          </Paper>
+
+          {/* <Search>
             <SearchIconWrapper>
               <SearchIcon />
             </SearchIconWrapper>
@@ -194,6 +217,17 @@ export default function PrimarySearchAppBar() {
               onChange={onInputChangeHandler}
             />
           </Search>
+          {searchedUsers.length > 0 && <>
+            <Menu open={true}>
+              {searchedUsers.map((user: any) => {
+                return <MenuItem onClick={() => {
+                  // dispatch(setUser(user))
+                  // setSearchedUsers([])
+                }}>{user.name}
+                </MenuItem>
+              })}
+            </Menu>
+          </>} */}
           <Box sx={{ flexGrow: 1 }} />
           <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
             <IconButton size="large" aria-label="show 4 new mails" color="inherit">

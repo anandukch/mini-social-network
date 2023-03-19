@@ -5,8 +5,9 @@ import UserService from "../services/users.service";
 
 class UserController {
   private userService = new UserService();
-  public index = (req: Request, res: Response, next: NextFunction) => {
-    res.send("Hello World");
+  public getProfile = (req: RequestWithUser, res: Response, next: NextFunction) => {
+    const userData: User = req.user;
+    res.status(200).json({ data: userData, message: "getProfile" });
   };
 
   public search = async (req: Request, res: Response, next: NextFunction) => {

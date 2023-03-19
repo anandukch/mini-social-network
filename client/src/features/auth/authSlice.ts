@@ -26,8 +26,13 @@ export const authSlice = createSlice({
   reducers: {
     logout: (state) => {
       localStorage.removeItem("auth");
+      state.userToken = null;
       state.isAuthenticated = false;
     },
+    setProfile:(state,action)=>{
+      // state.isAuthenticated = true
+      // state.data=action.payload
+    }
   },
   extraReducers: (builder) => {
     builder.addCase(registerUser.fulfilled, (state, action) => {
@@ -42,5 +47,5 @@ export const authSlice = createSlice({
   },
 });
 
-export const { logout } = authSlice.actions;
+export const { logout,setProfile } = authSlice.actions;
 export default authSlice.reducer;
