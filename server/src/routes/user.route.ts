@@ -2,6 +2,7 @@ import { Router } from "express";
 import UserController from "../controllers/user.controller";
 import { CreateUserDto } from "../dtos/users.dto";
 import { Routes } from "../interfaces/routes.interface";
+import authMiddleware from "../middlewares/auth.middleware";
 import validationMiddleware from "../middlewares/validation.middleware";
 
 class UserRoute implements Routes {
@@ -14,8 +15,9 @@ class UserRoute implements Routes {
   }
 
   private initializeRoutes() {
-    this.router.get(`${this.path}`, this.userController.index);
+    this.router.get(`${this.path}`,authMiddleware, this.userController.index);
     this.router.get(`${this.path}/search`, this.userController.search);
+    this.router.put(`${this.path}/follow/:friendId`, this.userController.index);
     // this.router.put(`${this.path}/:id`, this.userController);
   }
 }

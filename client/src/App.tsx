@@ -3,14 +3,15 @@ import reactLogo from './assets/react.svg'
 import './App.css'
 import RegisterScreen from './pages/RegisterScreen'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
-
+import  PrimarySearchAppBar from './components/AppBar'
+import Profile from "./pages/Profile"
+import Home from './pages/Home'
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
     <BrowserRouter>
+    <PrimarySearchAppBar/>
       <Routes>
-        <Route path='/' element={<RegisterScreen />} />
+        <Route path='/' element={<Home/>} />
       </Routes>
     </BrowserRouter>
   )

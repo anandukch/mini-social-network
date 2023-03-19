@@ -19,8 +19,8 @@ const RegisterScreen = () => {
       alert('Password mismatch')
     }
     data.email = data.email.toLowerCase()
-    dispatch(logout())
-    // dispatch(registerUser(data))
+    // dispatch(logout())
+    dispatch(registerUser(data))
   }
   return (
     <form onSubmit={handleSubmit(submitForm)}>

@@ -81,6 +81,41 @@ class UserService {
     return deleteUserById;
   }
 
+  public async addFriend(userData: User, friendId: string): Promise<User> {
+    if (isEmpty(userData)) throw new HttpException(400, "You're not userId");
+    const findFriend = await this.users.findById(friendId);
+    if (!findFriend) throw new HttpException(409, "You're not friend");
+    const isFollowing = userData.following.includes(friendId);
+    if (isFollowing)
+      throw new HttpException(409, "You're already following this user");
+    const isFollower = userData.followers.includes(friendId);
+    if (isFollower)
+      throw new HttpException(409, "You're already following this user");
+    await this.users.findOneAndUpdate(
+      { _id: userData._id },
+      { $push: { following: friendId } }
+    );
+    findFriend.followers.push(userData._id);
+    await findFriend.save();
+    return findFriend;
+  }
+
+  public async unFriend(userData: User, friendId: string): Promise<User> {
+    if (isEmpty(userData)) throw new HttpException(400, "You're not userId");
+    const findFriend = await this.users.findById(friendId);
+    if (!findFriend) throw new HttpException(409, "You're not friend");
+    const isNotFollowing = !userData.following.includes(friendId);
+    if (isNotFollowing)
+      throw new HttpException(409, "You're not following this user");
+    await this.users.findOneAndUpdate(
+      { _id: userData._id },
+      { $push: { following: friendId } }
+    );
+    findFriend.followers.push(userData._id);
+    await findFriend.save();
+    return findFriend;
+  }
+
   public searchUser = async (search: string): Promise<User[]> => {
     const users: User[] = await this.users.find({
       $or: [
