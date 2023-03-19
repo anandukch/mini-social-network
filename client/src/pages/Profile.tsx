@@ -1,11 +1,16 @@
 import { Button, Container, Grid, Paper, Typography } from "@mui/material";
-import React,{ useState } from "react";
+import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { login } from "../apis/authApi";
 import Input from "../components/Input";
-const initialState = { firstName: "", lastName: "",imgUrl:"", email: "", password: "" };
+import { registerUser } from "../features/auth/authActions";
+import { AppDispatch, RootState } from "../store/store";
+const initialState = { firstName: "", lastName: "", email: "", password: "" };
 function Auth() {
-  // const state = useSelector(state => state.user)
-  const dispatch = useDispatch();
+  const state = useSelector((state: RootState) => state.auth)
+  const dispatch = useDispatch<AppDispatch>();
+  console.log(state);
+  
   // const history = useHistory();
   // const classes = useStyles();
   const [form, setForm] = useState(initialState);
@@ -13,17 +18,19 @@ function Auth() {
   const signUpHandler = () => {
     setIsSignup(!isSignUp);
   };
-  const handleChange = (e:any) =>{
-    setForm({ ...form, [e.target.name]: e.target.value });}
-  
-  const handleSubmit = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: any) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  }
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement> ) => {
     e.preventDefault();
     if (isSignUp) {
-      
-      // dispatch(signup(form, history));
-      
+      console.log(form);
+
+      dispatch(registerUser(form));
+
     } else {
-      // dispatch(signin(form, history));
+      // dispatch(login(form));
     }
   };
   // const responseGoogle = (res) => {
@@ -38,7 +45,7 @@ function Auth() {
   //   }
   // };
   return (
-    <Container maxWidth="xs" style={{ marginTop: "50px"}}>
+    <Container maxWidth="xs" style={{ marginTop: "50px" }}>
       <Paper className="flex flex-col" elevation={6}>
         <div className="">
           <Button
@@ -62,7 +69,7 @@ function Auth() {
         <Typography variant="h6" align="center">
           {/* {state?.error ? state.error.data.message : ""} */}
         </Typography>
-        <form >
+        <form onSubmit={handleSubmit}>
           <Grid container alignContent="center">
             {isSignUp && (
               <>
@@ -78,11 +85,6 @@ function Auth() {
                   label="Last Name"
                   handleChange={handleChange}
                   half
-                />
-                <Input
-                  name="imgUrl"
-                  label="Profile"
-                  handleChange={handleChange}
                 />
               </>
             )}
@@ -105,10 +107,11 @@ function Auth() {
               variant="contained"
               className="m-[20%]"
               color="primary"
+              // onChange={handleSubmit}
             >
               Submit
             </Button>
-           
+
             {/* <Grid container alignItems='center' justifyContent="center">
               <GoogleLogin
                 clientId="784711989351-6lbr6iv7hr359tmok5ftj2buraj6smqc.apps.googleusercontent.com"

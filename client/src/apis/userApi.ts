@@ -1,6 +1,6 @@
 import api from "./index";
 
-export const searchUsers = (data:string) => api.post(`/users/search?search=${data}`);
+export const searchUsers = (data:string) => api.get(`/users/search?search=${data}`);
 
 export const getProfile = () => api.get(`/users`);
 export const addFriend = (friendId: string) =>

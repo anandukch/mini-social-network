@@ -1,12 +1,23 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { registerUser } from "./authActions";
 
+
+const userToken = localStorage.getItem('auth')
+  ? localStorage.getItem('auth')
+  : null
 export interface AuthState {
+  data:any,
+  userToken: string | null;
   isAuthenticated: boolean;
+  hasError: boolean;
 }
 
 const initialState: AuthState = {
+  data:{},
+  userToken,
   isAuthenticated: false,
+  hasError: false,
+
 };
 
 export const authSlice = createSlice({
@@ -20,12 +31,13 @@ export const authSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder.addCase(registerUser.fulfilled, (state, action) => {
-      console.log(action.payload);
-
+      state.data = action.payload.user;
+      state.userToken = action.payload.token;
       state.isAuthenticated = true;
     });
     builder.addCase(registerUser.rejected, (state, action) => {
       state.isAuthenticated = false;
+      state.data={};
     });
   },
 });

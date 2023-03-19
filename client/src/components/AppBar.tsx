@@ -15,6 +15,11 @@ import AccountCircle from '@mui/icons-material/AccountCircle';
 import MailIcon from '@mui/icons-material/Mail';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import MoreIcon from '@mui/icons-material/MoreVert';
+import { searchUsers } from '../apis/userApi';
+import { useDispatch, useSelector } from 'react-redux';
+import { AppDispatch, RootState } from '../store/store';
+import { logout } from '../features/auth/authSlice';
+import { Button } from '@mui/material';
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -57,6 +62,11 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }));
 
 export default function PrimarySearchAppBar() {
+  const dispatch = useDispatch<AppDispatch>();
+
+  const { userToken } = useSelector((state: RootState) => state.auth)
+  console.log(userToken);
+
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] =
     React.useState<null | HTMLElement>(null);
@@ -81,7 +91,11 @@ export default function PrimarySearchAppBar() {
     setMobileMoreAnchorEl(event.currentTarget);
   };
   const onInputChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
-    console.log(e.target.value)
+    searchUsers(e.target.value).then((res) => {
+      console.log(res);
+    }).catch(err => {
+      console.log(err);
+    })
   }
 
   const menuId = 'primary-search-account-menu';
@@ -153,7 +167,7 @@ export default function PrimarySearchAppBar() {
         >
           <AccountCircle />
         </IconButton>
-        <p>Profile</p>
+        {/* <p>Profile</p> */}
       </MenuItem>
     </Menu>
   );
@@ -207,6 +221,9 @@ export default function PrimarySearchAppBar() {
             >
               <AccountCircle />
             </IconButton>
+            {
+              userToken && <Button color="inherit" onClick={() => dispatch(logout())}>Logout</Button>
+            }
           </Box>
           <Box sx={{ display: { xs: 'flex', md: 'none' } }}>
             <IconButton

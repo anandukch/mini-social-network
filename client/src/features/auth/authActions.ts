@@ -1,5 +1,6 @@
 import { createAsyncThunk, AsyncThunkOptions } from "@reduxjs/toolkit";
 import { AxiosResponse } from "axios";
+import { register } from "../../apis/authApi";
 // import { register } from "../../apis";
 import { AppDispatch } from "../../store/store";
 
@@ -20,11 +21,12 @@ export const registerUser = createAsyncThunk<any,any>(
   "auth/register",
   async (payload:PayloadI,thunkApi) => {
     try {
-      // const { data }: AxiosResponse = await register(payload);
-      
-      localStorage.setItem("auth", "data.userToken");
-      return "data";
+      const { data }: AxiosResponse = await register(payload);
+      localStorage.setItem("auth", JSON.stringify(data.data.token));
+      return data.data;
     } catch (error: any) {
+      console.log(error);
+      
       if (error.response && error.response.data.message) {
         return thunkApi.rejectWithValue(error.response.data.message);
       } else {

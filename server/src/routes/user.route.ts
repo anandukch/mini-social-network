@@ -6,7 +6,7 @@ import authMiddleware from "../middlewares/auth.middleware";
 import validationMiddleware from "../middlewares/validation.middleware";
 
 class UserRoute implements Routes {
-  public path = "/user";
+  public path = "/users";
   public router = Router();
   public userController = new UserController();
 

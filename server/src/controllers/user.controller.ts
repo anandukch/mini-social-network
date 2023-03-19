@@ -11,6 +11,9 @@ class UserController {
 
   public search = async (req: Request, res: Response, next: NextFunction) => {
     try {
+
+      console.log(req.query);
+      
       const user = await this.userService.searchUser(
         req.query.search as string
       );
